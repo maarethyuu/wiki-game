@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=JetBrains+Mono:wght@500;700&family=Nunito:wght@400;700;900&display=swap');
+
+:root {
+
+  --bg-cream: #FFF5EE;
+  --peach-warm: #FFDAB9;
+  --digital-blue: #00D1FF;
+  --ink-navy: #1A1B41;
+  
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --border-thick: 3px solid var(--ink-navy);
+  --shadow-hard: 4px 4px 0px var(--ink-navy);
+  --shadow-hard-hover: 6px 6px 0px var(--ink-navy);
+  
+  --radius-card: 24px;
+  --radius-btn: 16px;
+  
+  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  color: var(--ink-navy);
+  background-color: var(--bg-cream);
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+  z-index: 9999;
+}
+
+h1, h2, h3, .chunky-text {
+  font-family: 'Baloo 2', cursive;
+  letter-spacing: -0.02em;
+}
+
+.mono-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+}
+
+
+/* KARTA SZKŁO */
+.card-pop {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: var(--border-thick);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard);
+  padding: 24px;
+}
+
+/* PRZYCISK */
+.btn-pop {
+  background: var(--digital-blue);
+  color: var(--ink-navy);
+  border: var(--border-thick);
+  border-radius: var(--radius-btn);
+  padding: 14px 24px;
+  font-family: 'Baloo 2', cursive;
+  font-weight: 800;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-hard);
+  transition: transform 0.3s var(--bounce), box-shadow 0.3s var(--bounce);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-pop:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-hover);
+  background: #33DBFF;
+}
+
+.btn-pop:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--ink-navy);
+}
+
+.btn-pop:disabled {
+  background: #E0E0E0;
+  color: #888;
+  border-color: #888;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* INPUT RETRO DATA */
+.input-pop {
+  width: 100%;
+  padding: 14px 18px;
+  border: var(--border-thick);
+  border-radius: var(--radius-btn);
+  background: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: var(--ink-navy);
+  outline: none;
+  box-sizing: border-box;
+  box-shadow: 2px 2px 0px rgba(26, 27, 65, 0.1);
+  transition: all 0.2s ease;
+}
+
+.input-pop:focus {
+  background: #F0FBFF;
+  box-shadow: var(--shadow-hard);
+  transform: translate(-1px, -1px);
+}
+
+/* MODAL RETRO WINDOW */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(26, 27, 65, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-window {
+  background: white;
+  width: 650px; max-width: 90%;
+  border: var(--border-thick);
+  border-radius: var(--radius-card);
+  box-shadow: 8px 8px 0px var(--ink-navy);
+  animation: popIn 0.4s var(--bounce);
+  overflow: hidden;
+}
+
+.modal-header {
+  background: var(--peach-warm);
+  border-bottom: var(--border-thick);
+  padding: 16px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.modal-body {
+  padding: 30px;
+  display: flex; gap: 24px;
+}
+
+/* WĘZŁY GRAFU */
+.node-pop-container {
+  transition: transform 0.4s var(--bounce);
+  z-index: 10;
+}
+.node-pop-container:hover {
+  transform: scale(1.25);
+  z-index: 100;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { transform: scale(0.8); } to { transform: scale(1); } }
+@keyframes bfs-pulse {
+  0% { box-shadow: 0 0 0 0px rgba(0, 209, 255, 0.4); }
+  100% { box-shadow: 0 0 0 20px rgba(0, 209, 255, 0); }
+}
+
+.node-searching {
+  animation: bfs-pulse 1.5s infinite;
+}
+
+.react-flow__attribution {
+  display: none;
+}
