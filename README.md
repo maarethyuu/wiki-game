@@ -49,14 +49,14 @@ Projekt został zbudowany w oparciu o nowoczesny stos technologiczny (React + Vi
 
 ### Struktura
 src/
-├── components/ # Warstwa Prezentacji (UI)
-│ ├── ControlPanel # Panel sterowania (inputy, historia)
-│ ├── GraphVisualizer # Wrapper na silnik grafowy
-│ └── WikiNode # Customowy węzeł (Retro styl)
-├── services/ # Warstwa Logiki
-│ ├── wikiApi.js # Komunikacja z MediaWiki API
-│ └── graphLogic.js # Czysta implementacja BFS
-└── App.jsx # Główny stan i layout
+├── components/         # Warstwa Prezentacji (UI)
+│   ├── ControlPanel    # Panel sterowania (inputy, historia)
+│   ├── GraphVisualizer # Wrapper na silnik grafowy
+│   └── WikiNode        # Customowy węzeł (Retro styl)
+├── services/           # Warstwa Logiki
+│   ├── wikiApi.js      # Komunikacja z MediaWiki API
+│   └── graphLogic.js   # Czysta implementacja BFS
+└── App.jsx             # Główny stan i layout
 
 ### Zastosowane Algorytmy
 *   **BFS (Breadth-First Search):** Przeszukiwanie wszerz. Gwarantuje znalezienie najkrótszej ścieżki w grafie nieważonym.
