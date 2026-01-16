@@ -3,7 +3,7 @@ import GraphVisualizer from "./components/GraphVisualizer";
 import ControlPanel from "./components/ControlPanel";
 import { GraphSearcher } from "./services/graphLogic";
 import { checkArticleExists, getArticleDetails } from "./services/wikiApi";
-import { LuOrbit, LuX, LuExternalLink } from "react-icons/lu";
+import { LuOrbit, LuX, LuExternalLink, LuMousePointer2, LuClock, LuEye } from "react-icons/lu";
 
 function App() {
   const [isSearching, setIsSearching] = useState(false);
@@ -30,64 +30,90 @@ function App() {
 
   const closeModal = () => setModalData(null);
 
-const visualizePath = (path, explorationTree) => {
-  const pathSet = new Set(path);
-  const newNodes = [];
-  const newEdges = [];
+  const visualizePath = (path, explorationTree) => {
+    if (!explorationTree) return;
 
-  const layers = {};
-  explorationTree.nodes.forEach(node => {
-    if (!layers[node.depth]) layers[node.depth] = [];
-    layers[node.depth].push(node);
-  });
+    const pathSet = new Set(path);
+    const newNodes = [];
 
-  const VERTICAL_SPACING = 200;
-  const HORIZONTAL_SPACING = 220;
+    const depthGroups = {};
+    explorationTree.nodes.forEach((node) => {
+      if (!depthGroups[node.depth]) depthGroups[node.depth] = [];
+      depthGroups[node.depth].push(node);
+    });
 
-  Object.keys(layers).forEach(depthStr => {
-    const depth = parseInt(depthStr);
-    const nodesInLayer = layers[depth];
-    const totalWidth = (nodesInLayer.length - 1) * HORIZONTAL_SPACING;
+    Object.keys(depthGroups).forEach((key) => {
+      const depth = parseInt(key);
+      const nodesInLayer = depthGroups[depth];
 
-    nodesInLayer.forEach((node, index) => {
-      const isOnPath = pathSet.has(node.id);
-      
-      newNodes.push({
-        id: node.id,
-        type: 'wikiNode',
-        position: { 
-          x: (index * HORIZONTAL_SPACING) - (totalWidth / 2), 
-          y: depth * VERTICAL_SPACING 
-        },
-        data: {
-          label: node.id,
-          depth: depth,
-          isStart: node.id === path[0],
-          isEnd: node.id === path[path.length - 1],
-          isOnPath: isOnPath
-        }
+      const mainPathNode = nodesInLayer.find((n) => pathSet.has(n.id));
+      const ghostNodes = nodesInLayer.filter((n) => !pathSet.has(n.id));
+
+      const spacingY = 250;
+
+      if (mainPathNode) {
+        newNodes.push({
+          id: mainPathNode.id,
+          type: "wikiNode",
+          position: { x: 0, y: depth * spacingY },
+          data: {
+            label: mainPathNode.id,
+            isStart: mainPathNode.id === path[0],
+            isEnd: mainPathNode.id === path[path.length - 1],
+            isGhost: false,
+            isOnPath: true,
+            depth: depth
+          },
+          zIndex: 100,
+        });
+      }
+
+      const spacingX = 180;
+      ghostNodes.forEach((ghost, index) => {
+        const direction = index % 2 === 0 ? -1 : 1;
+        const multiplier = Math.floor(index / 2) + 1;
+        const xPos = multiplier * spacingX * direction;
+
+        newNodes.push({
+          id: ghost.id,
+          type: "wikiNode",
+          position: { x: xPos, y: depth * spacingY },
+          data: { 
+            label: ghost.id, 
+            isGhost: true, // To jest duch
+            isOnPath: false,
+            depth: depth 
+          },
+          zIndex: 1,
+        });
       });
     });
-  });
 
-  explorationTree.edges.forEach((edge, i) => {
-    const isWinningEdge = path.includes(edge.source) && 
-                         path.includes(edge.target) && 
-                         path.indexOf(edge.target) === path.indexOf(edge.source) + 1;
+    const newEdges = explorationTree.edges.map((edge, i) => {
+      const sourceIndex = path.indexOf(edge.source);
+      const targetIndex = path.indexOf(edge.target);
+      const isPathEdge =
+        sourceIndex !== -1 &&
+        targetIndex !== -1 &&
+        targetIndex === sourceIndex + 1;
 
-    newEdges.push({
-      id: `e-${i}`,
-      source: edge.source,
-      target: edge.target,
-      className: isWinningEdge ? 'winning-path' : '',
-      animated: isWinningEdge,
-      type: 'smoothstep'
+      return {
+        id: `e-${i}`,
+        source: edge.source,
+        target: edge.target,
+        animated: isPathEdge,
+        style: {
+          stroke: isPathEdge ? "var(--ink-navy)" : "rgba(47, 42, 71, 0.1)",
+          strokeWidth: isPathEdge ? 4 : 1,
+          opacity: isPathEdge ? 1 : 0.4,
+        },
+        type: isPathEdge ? "smoothstep" : "default",
+      };
     });
-  });
 
-  setNodes(newNodes);
-  setEdges(newEdges);
-};
+    setNodes(newNodes);
+    setEdges(newEdges);
+  };
 
   const handleSearch = async (start, target, maxDepth = 3) => {
     setIsSearching(true);
@@ -252,17 +278,17 @@ const visualizePath = (path, explorationTree) => {
               boxShadow: '4px 4px 0px var(--ink-navy)', zIndex: 20
             }}>
                <div style={{ textAlign: 'center' }}>
-                 <div className="mono-text" style={{ opacity: 0.7, marginBottom: '4px' }}>DEPTH</div>
+                 <div className="mono-text" style={{ opacity: 0.7, marginBottom: '4px', display:'flex', gap:'5px', alignItems:'center', justifyContent:'center' }}><LuMousePointer2/> DEPTH</div>
                  <div className="chunky-text" style={{ fontSize: '1.5rem' }}>{stats.depth}</div>
                </div>
                <div style={{ width: '3px', height: '40px', background: 'var(--ink-navy)' }}></div>
                <div style={{ textAlign: 'center' }}>
-                 <div className="mono-text" style={{ opacity: 0.7, marginBottom: '4px' }}>NODES</div>
+                 <div className="mono-text" style={{ opacity: 0.7, marginBottom: '4px', display:'flex', gap:'5px', alignItems:'center', justifyContent:'center' }}><LuEye/> NODES</div>
                  <div className="chunky-text" style={{ fontSize: '1.5rem' }}>{stats.visitedCount}</div>
                </div>
                <div style={{ width: '3px', height: '40px', background: 'var(--ink-navy)' }}></div>
                <div style={{ textAlign: 'center' }}>
-                 <div className="mono-text" style={{ opacity: 0.7, marginBottom: '4px' }}>TIME</div>
+                 <div className="mono-text" style={{ opacity: 0.7, marginBottom: '4px', display:'flex', gap:'5px', alignItems:'center', justifyContent:'center' }}><LuClock/> TIME</div>
                  <div className="chunky-text" style={{ fontSize: '1.5rem' }}>{stats.timeMs}ms</div>
                </div>
             </div>
@@ -272,4 +298,5 @@ const visualizePath = (path, explorationTree) => {
     </div>
   );
 }
+
 export default App;
