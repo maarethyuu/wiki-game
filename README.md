@@ -1,16 +1,87 @@
-# React + Vite
+# Wiki Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **Projekt zaliczeniowy: Algorytmy Grafowe**  
+> Autor: **Nadia Zatorska**
 
-Currently, two official plugins are available:
+Interaktywna aplikacja webowa, która wizualizuje proces znajdowania najkrótszej ścieżki między dwoma artykułami w Wikipedii. Projekt łączy surową logikę algorytmów z unikalnym stylem **retro-pop**, zamieniając abstrakcyjne dane w "plac zabaw dla mózgu".
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react)
+![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?style=flat&logo=vite)
+![ReactFlow](https://img.shields.io/badge/ReactFlow-11-FF0072?style=flat&logo=react)
+![License](https://img.shields.io/badge/Status-Completed-success)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## O Projekcie
 
-## Expanding the ESLint configuration
+Celem projektu było stworzenie narzędzia, które nie tylko oblicza wynik (najkrótszą drogę), ale przede wszystkim **pokazuje proces myślowy algorytmu**.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Stylistyka
+- **Paleta Peach & Ink:** Ciepła brzoskwinia i cyfrowy błękit przełamane atramentowym granatem.
+- **Grube kontury i twarde cienie:** Estetyka inspirowana interfejsami lat 90. w wersji HD.
+- **Mikro-interakcje:** Sprężyste animacje (bouncy physics) i responsywne elementy.
+
+---
+
+## Kluczowe funkcjonalności
+
+### 1. Wizualizacja drzewa poszukiwań (BFS)
+- Algorytm nie pokazuje tylko jednej linii. Rysuje **całe drzewo eksploracji** (piramidę), pokazując skalę problemu.
+- **Główna ścieżka:** Zawsze wycentrowana (oś X=0), wyróżniona grubą, atramentową linią.
+- **Tło (Ghost Nodes):** Pozostałe sprawdzone strony są wyświetlane jako subtelne tło, co pozwala zrozumieć, ile pracy wykonał algorytm.
+
+### 2. Inteligentne Zarządzanie Danymi
+- **Limit per level:** Aby uniknąć "wybuchu" przeglądarki (Wikipedia ma miliony połączeń), wizualizator inteligentnie ogranicza liczbę wyświetlanych węzłów tła do 25 na poziom głębokości.
+- **Gwarancja spójności:** Nawet przy limitach wizualizacji, algorytm zawsze "wstrzykuje" brakujące ogniwa zwycięskiej ścieżki, aby wynik był kompletny.
+
+### 3. Interaktywne karty wiedzy
+- Po kliknięciu w dowolny węzeł otwiera się **retro-modal**.
+- Aplikacja pobiera na żywo z API Wikipedii:
+    - Miniaturkę artykułu.
+    - Krótki abstrakt (streszczenie).
+    - Bezpośredni link do źródła.
+
+---
+
+## Architektura i technologie
+
+Projekt został zbudowany w oparciu o nowoczesny stos technologiczny (React + Vite), z wyraźnym podziałem na warstwy:
+
+### Struktura
+src/
+├── components/ # Warstwa Prezentacji (UI)
+│ ├── ControlPanel # Panel sterowania (inputy, historia)
+│ ├── GraphVisualizer # Wrapper na silnik grafowy
+│ └── WikiNode # Customowy węzeł (Retro styl)
+├── services/ # Warstwa Logiki
+│ ├── wikiApi.js # Komunikacja z MediaWiki API
+│ └── graphLogic.js # Czysta implementacja BFS
+└── App.jsx # Główny stan i layout
+
+### Zastosowane Algorytmy
+*   **BFS (Breadth-First Search):** Przeszukiwanie wszerz. Gwarantuje znalezienie najkrótszej ścieżki w grafie nieważonym.
+*   **Tree layout algorithm:** Autorski algorytm rozmieszczania węzłów na ekranie (centrowanie ścieżki + rozkładanie tła na boki).
+
+---
+
+## Jak uruchomić?
+
+1.  **Zainstaluj zależności:**
+    ```bash
+    npm install
+    ```
+
+2.  **Uruchom serwer developerski:**
+    ```bash
+    npm run dev
+    ```
+
+3.  Otwórz w przeglądarce adres: `http://localhost:5173`
+
+---
+
+## Autor
+
+**Nadia Zatorska**  
+Projekt realizowany w ramach przedmiotu **Algorytmy Grafowe**.  
+*„Making data fun again.”*
