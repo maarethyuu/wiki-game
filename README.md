@@ -48,6 +48,7 @@ Celem projektu było stworzenie narzędzia, które nie tylko oblicza wynik (najk
 Projekt został zbudowany w oparciu o nowoczesny stos technologiczny (React + Vite), z wyraźnym podziałem na warstwy:
 
 ### Struktura
+```
 src/
 ├── components/         # Warstwa Prezentacji (UI)
 │   ├── ControlPanel    # Panel sterowania (inputy, historia)
@@ -57,6 +58,7 @@ src/
 │   ├── wikiApi.js      # Komunikacja z MediaWiki API
 │   └── graphLogic.js   # Czysta implementacja BFS
 └── App.jsx             # Główny stan i layout
+```
 
 ### Zastosowane Algorytmy
 *   **BFS (Breadth-First Search):** Przeszukiwanie wszerz. Gwarantuje znalezienie najkrótszej ścieżki w grafie nieważonym.
